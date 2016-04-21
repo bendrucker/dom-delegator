@@ -11,9 +11,14 @@ var MOUSE_PROPS = [
     "layerY", "offsetX", "offsetY", "pageX", "pageY",
     "screenX", "screenY", "toElement"
 ]
+var TOUCH_PROPS = [
+    "touches", "targetTouches", "changedTouches",
+    "layerX", "layerY", "pageX", "pageY"
+]
 
 var rkeyEvent = /^key|input/
 var rmouseEvent = /^(?:mouse|pointer|contextmenu)|click/
+var rtouchEvent = /^touch/
 
 module.exports = ProxyEvent
 
@@ -26,6 +31,8 @@ function ProxyEvent(ev) {
         return new KeyEvent(ev)
     } else if (rmouseEvent.test(ev.type)) {
         return new MouseEvent(ev)
+    } else if (rtouchEvent.test(ev.type)) {
+        return new TouchEvent(ev)
     }
 
     for (var i = 0; i < ALL_PROPS.length; i++) {
@@ -76,3 +83,19 @@ function KeyEvent(ev) {
 }
 
 inherits(KeyEvent, ProxyEvent)
+
+function TouchEvent(ev) {
+    for (var i = 0; i < ALL_PROPS.length; i++) {
+        var propKey = ALL_PROPS[i]
+        this[propKey] = ev[propKey]
+    }
+
+    for (var j = 0; j < TOUCH_PROPS.length; j++) {
+        var keyPropKey = TOUCH_PROPS[j]
+        this[keyPropKey] = ev[keyPropKey]
+    }
+
+    this._rawEvent = ev
+}
+
+inherits(TouchEvent, ProxyEvent)
