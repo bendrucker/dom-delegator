@@ -6,7 +6,7 @@ var addEvent = require("./add-event.js")
 var removeEvent = require("./remove-event.js")
 var ProxyEvent = require("./proxy-event.js")
 
-var HANDLER_STORE = createStore()
+var HANDLER_STORE = global.__DOM_Delegator_Handler_Store__ = global.__DOM_Delegator_Handler_Store__ || createStore()
 
 module.exports = DOMDelegator
 
